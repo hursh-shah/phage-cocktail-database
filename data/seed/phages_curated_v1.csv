@@ -1,0 +1,16 @@
+name,genome_accession,host_primary_taxon,evidence_level,confidence,tags,notes
+Staphylococcus phage phiP68,NC_004679.1,Staphylococcus aureus,peer_reviewed,high,"staph_priority|has_genome_sequence|sparse_metadata",RefSeq-linked seed record
+Staphylococcus phage 80alpha,NC_009526.1,Staphylococcus aureus,peer_reviewed,high,"staph_priority|has_genome_sequence|sparse_metadata",RefSeq-linked seed record
+Staphylococcus phage Twort,NC_007021.1,Staphylococcus aureus,peer_reviewed,high,"staph_priority|has_genome_sequence|sparse_metadata",RefSeq-linked seed record
+Staphylococcus phage K,NC_005880.2,Staphylococcus aureus,peer_reviewed,high,"staph_priority|has_genome_sequence|sparse_metadata",RefSeq-linked seed record
+Staphylococcus phage 66,NC_007046.1,Staphylococcus aureus,peer_reviewed,high,"staph_priority|has_genome_sequence|sparse_metadata",RefSeq-linked seed record
+Staphylococcus phage 47,NC_007054.1,Staphylococcus aureus,peer_reviewed,high,"staph_priority|has_genome_sequence|sparse_metadata",RefSeq-linked seed record
+Staphylococcus phage StB27,NC_019914.1,Staphylococcus aureus,peer_reviewed,high,"staph_priority|has_genome_sequence|sparse_metadata",RefSeq-linked seed record
+Staphylococcus phage phiSa119,NC_025460.1,Staphylococcus aureus,peer_reviewed,high,"staph_priority|has_genome_sequence|sparse_metadata",RefSeq-linked seed record
+Staphylococcus phage P954,NC_013195.1,Staphylococcus aureus,peer_reviewed,high,"staph_priority|has_genome_sequence|sparse_metadata",RefSeq-linked seed record
+Staphylococcus phage P630,NC_048635.1,Staphylococcus aureus,peer_reviewed,high,"staph_priority|has_genome_sequence|sparse_metadata",RefSeq-linked seed record
+Staphylococcus phage 3AJ-2017,NC_048644.1,Staphylococcus aureus,peer_reviewed,high,"staph_priority|has_genome_sequence|sparse_metadata",RefSeq-linked seed record
+Staphylococcus phage phiETA,NC_003288.1,Staphylococcus aureus,peer_reviewed,high,"staph_priority|has_genome_sequence|sparse_metadata",RefSeq-linked seed record
+KB824,,Staphylococcus aureus,unpublished_comm,medium,"staph_priority|has_host_range_assay|has_kinetics_stage|has_cocktail_experiment|cocktail_timing_study|needs_validation",Partner-reported early phage in timing-staggered cocktail
+SBP2@2,,Staphylococcus aureus,unpublished_comm,medium,"staph_priority|has_host_range_assay|has_kinetics_stage|has_cocktail_experiment|cocktail_timing_study|needs_validation",Partner-reported semi-early phage in timing-staggered cocktail
+ANB28,,Staphylococcus aureus,unpublished_comm,medium,"staph_priority|has_host_range_assay|has_kinetics_stage|has_cocktail_experiment|cocktail_timing_study|needs_validation",Partner-reported late phage in timing-staggered cocktail
