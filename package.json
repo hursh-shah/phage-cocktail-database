@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint . --max-warnings=0",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "public-ml:data": "node scripts/build_public_ml_dataset.mjs"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.57.4",

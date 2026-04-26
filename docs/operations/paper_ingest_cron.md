@@ -14,6 +14,6 @@ This project includes `supabase/functions/paper_ingest_daily/index.ts` for daily
 
 ## Function behavior
 
-1. Calls `POST /api/ingest/papers/search` with the default S. aureus cocktail query.
+1. Calls `POST /api/ingest/papers/search` with the default Stenotrophomonas maltophilia phage design-factor query.
 2. Returns ingestion job summary (`discovered`, `inserted`, `deduped`).
 3. Relies on in-app review flow to fetch/extract/approve rows before publication.

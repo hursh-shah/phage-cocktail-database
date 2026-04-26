@@ -9,7 +9,7 @@ type SearchResponse = {
 };
 
 const DEFAULT_TERM =
-  '"phage cocktail" AND (staphylococcus OR "S. aureus") AND ("kill curve" OR biofilm OR CFU OR "log reduction")';
+  '("Stenotrophomonas maltophilia"[Title/Abstract] OR "S. maltophilia"[Title/Abstract]) AND (phage[Title/Abstract] OR bacteriophage[Title/Abstract]) AND ("host range"[Title/Abstract] OR infectivity[Title/Abstract] OR EOP[Title/Abstract] OR "efficiency of plating"[Title/Abstract] OR "growth curve"[Title/Abstract] OR "kill curve"[Title/Abstract] OR cocktail[Title/Abstract] OR biofilm[Title/Abstract] OR "antibiotic synergy"[Title/Abstract] OR "resistance emergence"[Title/Abstract]) NOT (prophage[Title] OR prophages[Title] OR "phylogenetic diversity"[Title] OR "comparative genomics"[Title])';
 
 async function runIngestion(baseUrl: string, token: string): Promise<SearchResponse> {
   const response = await fetch(`${baseUrl}/api/ingest/papers/search`, {
@@ -21,7 +21,8 @@ async function runIngestion(baseUrl: string, token: string): Promise<SearchRespo
     body: JSON.stringify({
       term: DEFAULT_TERM,
       maxResults: 25,
-      pathogenFocus: "S_aureus"
+      pathogenFocus: "S_maltophilia",
+      profile: "steno"
     })
   });
 

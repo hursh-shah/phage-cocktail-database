@@ -1,0 +1,58 @@
+[
+  {
+    "source": "LBNL Phage Foundry",
+    "status": "passed",
+    "checked": [
+      "phage metadata rows=260",
+      "EOP rows=923",
+      "network nodes=2017",
+      "network edges=115149"
+    ],
+    "note": "Direct TSV/CSV assets were downloaded from the public Phage Foundry data browser; no prose extraction was used."
+  },
+  {
+    "source": "Local Supabase Steno rows",
+    "status": "passed",
+    "checked": [
+      "published factor rows=219",
+      "canonical rows=200"
+    ],
+    "note": "Rows are existing published/curated app data; duplicated pending Steno extractions were not approved."
+  },
+  {
+    "source": "Predictive phage therapy for Escherichia coli urinary tract infections: Cocktail selection for therapy based on machine learning models",
+    "status": "blocked_machine_readable_tables",
+    "checked": [
+      "31 phage mentioned: yes",
+      "314 strains mentioned: yes",
+      "interaction score definition: yes",
+      "SI Table S1 mentioned: yes",
+      "SI Table S6 mentioned: yes"
+    ],
+    "note": "The primary article text confirms the >9,000 interaction matrix, but the tables are in a supplementary appendix PDF rather than an API-reachable CSV/XLSX in this run. This source should be manually downloaded or PDF-table parsed before full host-range ML claims."
+  },
+  {
+    "source": "Combination of genetically diverse Pseudomonas phages enhances the cocktail efficiency against bacteria",
+    "status": "passed",
+    "checked": [
+      "six cocktail formulas: yes",
+      "4 to 6 log difference statement: yes",
+      "regrowth suppression statement: yes",
+      "GenBank OP875100.2: yes",
+      "GenBank OP875101.1: yes"
+    ],
+    "note": "Curated rows use paper text, not figure digitization; numeric CFU values remain figure-derived and should be digitized before quantitative cocktail ML."
+  },
+  {
+    "source": "Rapid formulation of a genetically diverse phage cocktail targeting uropathogenic Escherichia coli infections using the UTI89 model",
+    "status": "passed",
+    "checked": [
+      "SR02+SR04 combination: yes",
+      "regrowth statement: yes",
+      "host-range statement: yes",
+      "GenBank OQ870566: yes",
+      "GenBank OQ870567: yes"
+    ],
+    "note": "Curated rows use explicit paper text. Growth-curve values should be digitized from figures for quantitative modeling."
+  }
+]

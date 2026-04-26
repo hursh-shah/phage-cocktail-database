@@ -44,7 +44,7 @@ export function PapersConsole({ initialQueue, initialReview, initialPublished }:
   const [review, setReview] = useState(initialReview);
   const [published, setPublished] = useState(initialPublished);
   const [term, setTerm] = useState(
-    '"phage cocktail" AND (staphylococcus OR "S. aureus") AND ("kill curve" OR biofilm OR CFU OR "log reduction")'
+    '("Stenotrophomonas maltophilia"[Title/Abstract] OR "S. maltophilia"[Title/Abstract]) AND (phage[Title/Abstract] OR bacteriophage[Title/Abstract]) AND ("host range"[Title/Abstract] OR infectivity[Title/Abstract] OR EOP[Title/Abstract] OR "efficiency of plating"[Title/Abstract] OR "growth curve"[Title/Abstract] OR "kill curve"[Title/Abstract] OR cocktail[Title/Abstract] OR biofilm[Title/Abstract] OR "antibiotic synergy"[Title/Abstract] OR "resistance emergence"[Title/Abstract]) NOT (prophage[Title] OR prophages[Title] OR "phylogenetic diversity"[Title] OR "comparative genomics"[Title])'
   );
   const [token, setToken] = useState("");
   const [statusMessage, setStatusMessage] = useState<string>("");
@@ -58,7 +58,7 @@ export function PapersConsole({ initialQueue, initialReview, initialPublished }:
         cache: "no-store",
         headers: authHeader
       }),
-      fetch("/api/papers/published-outcomes?pathogen=S_aureus", { cache: "no-store" })
+      fetch("/api/papers/published-outcomes?pathogen=S_maltophilia", { cache: "no-store" })
     ]);
 
     if (queueRes.ok) {
@@ -96,7 +96,8 @@ export function PapersConsole({ initialQueue, initialReview, initialPublished }:
         body: JSON.stringify({
           term,
           maxResults: 25,
-          pathogenFocus: "S_aureus"
+          pathogenFocus: "S_maltophilia",
+          profile: "steno"
         })
       });
       const payload = (await response.json()) as Record<string, unknown>;
@@ -236,34 +237,69 @@ export function PapersConsole({ initialQueue, initialReview, initialPublished }:
               <div className="stack" style={{ gap: "0.15rem" }}>
                 <strong>{item.paper.title}</strong>
                 <span className="muted" style={{ fontSize: "0.84rem" }}>
-                  Confidence {item.extraction.confidence.toFixed(3)} | {item.extraction.extractorVersion}
+                  Confidence {item.extraction.confidence.toFixed(3)} | {item.extraction.extractorVersion} |{" "}
+                  {item.rows.length} cocktail rows | {item.factorRows.length} factor rows
                 </span>
               </div>
               <span className="pill">{item.extraction.status}</span>
             </div>
-            <table className="data-table">
-              <thead>
-                <tr>
-                  <th>Assay</th>
-                  <th>Host</th>
-                  <th>Phages</th>
-                  <th>Outcome</th>
-                </tr>
-              </thead>
-              <tbody>
-                {item.rows.map((row) => (
-                  <tr key={row.id}>
-                    <td>{row.assayType ?? "unknown"}</td>
-                    <td>
-                      {row.hostSpecies ?? "unknown"}
-                      {row.hostStrainRaw ? ` (${row.hostStrainRaw})` : ""}
-                    </td>
-                    <td>{row.phageNames.join(", ") || "none"}</td>
-                    <td>{toMetricPreview(row.outcomeMetrics)}</td>
+            {item.rows.length > 0 && (
+              <table className="data-table">
+                <thead>
+                  <tr>
+                    <th>Assay</th>
+                    <th>Host</th>
+                    <th>Phages</th>
+                    <th>Outcome</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody>
+                  {item.rows.map((row) => (
+                    <tr key={row.id}>
+                      <td>{row.assayType ?? "unknown"}</td>
+                      <td>
+                        {row.hostSpecies ?? "unknown"}
+                        {row.hostStrainRaw ? ` (${row.hostStrainRaw})` : ""}
+                      </td>
+                      <td>{row.phageNames.join(", ") || "none"}</td>
+                      <td>{toMetricPreview(row.outcomeMetrics)}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            )}
+            {item.factorRows.length > 0 && (
+              <table className="data-table">
+                <thead>
+                  <tr>
+                    <th>Factor</th>
+                    <th>Host</th>
+                    <th>Phages</th>
+                    <th>Measurements</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {item.factorRows.map((row) => (
+                    <tr key={row.id}>
+                      <td>
+                        <div className="stack" style={{ gap: "0.15rem" }}>
+                          <span>{row.factorType}</span>
+                          <span className="muted" style={{ fontSize: "0.8rem" }}>
+                            {row.assayType ?? "unknown"} | {row.confidence.toFixed(3)}
+                          </span>
+                        </div>
+                      </td>
+                      <td>
+                        {row.hostSpecies ?? "unknown"}
+                        {row.hostStrainRaw ? ` (${row.hostStrainRaw})` : ""}
+                      </td>
+                      <td>{row.phageNames.join(", ") || row.phageAccessions.join(", ") || "none"}</td>
+                      <td>{toMetricPreview(row.measurements)}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            )}
             <div className="split">
               <button
                 className="btn-link"

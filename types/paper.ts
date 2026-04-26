@@ -53,6 +53,36 @@ export type PaperExtractionRow = {
   createdAt: string;
 };
 
+export type DesignFactorType =
+  | "host_range"
+  | "kinetics"
+  | "genetic_relatedness"
+  | "receptor_resistance"
+  | "biofilm"
+  | "antibiotic_synergy"
+  | "cocktail_outcome"
+  | "safety";
+
+export type PaperExtractionFactorRow = {
+  id: string;
+  paperExtractionId: string;
+  factorType: DesignFactorType;
+  pathogen: string;
+  hostSpecies: string | null;
+  hostStrainRaw: string | null;
+  phageNames: string[];
+  phageAccessions: string[];
+  assayType: "spot" | "plaque" | "EOP" | "kill_curve" | "biofilm" | "in_vivo" | "other" | null;
+  conditions: Record<string, unknown>;
+  measurements: Record<string, unknown>;
+  outcomeRole: string | null;
+  evidenceLocation: string | null;
+  confidence: number;
+  needsReview: boolean;
+  publishedAt: string | null;
+  createdAt: string;
+};
+
 export type PaperExtraction = {
   id: string;
   paperId: string;
@@ -64,12 +94,14 @@ export type PaperExtraction = {
   reviewedAt: string | null;
   reviewedBy: string | null;
   rows: PaperExtractionRow[];
+  factorRows: PaperExtractionFactorRow[];
 };
 
 export type PaperSearchPayload = {
   term?: string;
   maxResults?: number;
   pathogenFocus?: string;
+  profile?: "steno" | "staph" | "ecoli" | "pseudomonas" | "custom";
 };
 
 export type PaperSearchResult = {
@@ -99,14 +131,17 @@ export type PaperExtractResult = {
 export type PaperReviewQueueResult = {
   extractionId: string;
   paper: PaperRecord;
-  extraction: Omit<PaperExtraction, "rows">;
+  extraction: Omit<PaperExtraction, "rows" | "factorRows">;
   rows: PaperExtractionRow[];
+  factorRows: PaperExtractionFactorRow[];
 };
 
 export type PaperApproveResult = {
   extractionId: string;
   publishedRows: number;
+  publishedFactorRows: number;
   skippedRows: number;
+  skippedFactorRows: number;
   cocktailIds: string[];
 };
 

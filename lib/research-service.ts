@@ -14,6 +14,22 @@ function uniqueStrings(values: string[]): string[] {
   return [...new Set(values.filter(Boolean))];
 }
 
+function firstRelatedRecord(value: unknown): Record<string, unknown> {
+  if (Array.isArray(value)) {
+    return (value.find((item) => item && typeof item === "object") as Record<string, unknown> | undefined) ?? {};
+  }
+  return (value as Record<string, unknown> | null) ?? {};
+}
+
+function inferPathogenFromText(value: string): string {
+  if (/Stenotrophomonas\s+maltophilia|S\.\s*maltophilia/i.test(value)) return "S_maltophilia";
+  if (/Staphylococcus\s+aureus|S\.\s*aureus|MRSA/i.test(value)) return "S_aureus";
+  if (/Escherichia\s+coli|E\.\s*coli/i.test(value)) return "E_coli";
+  if (/Pseudomonas\s+aeruginosa|P\.\s*aeruginosa/i.test(value)) return "P_aeruginosa";
+  return "unknown";
+}
+
+
 export async function listCocktailOutcomes(cocktailId: string) {
   const supabase = createSupabaseServerClient();
   const { data, error } = await supabase
@@ -470,25 +486,27 @@ export async function listPublishedPaperOutcomes(filters: {
 
   return ((data ?? []) as Array<Record<string, unknown>>)
     .map((row) => {
-      const paperRow =
-        (row.paper_extraction_rows as Record<string, unknown> | null) ?? {};
-      const cocktail = (row.cocktails as Record<string, unknown> | null) ?? {};
-      const experiment = (row.experiments as Record<string, unknown> | null) ?? {};
-      const assayRow = (experiment.assays as Record<string, unknown> | null) ?? {};
-      const result =
-        (row.cocktail_experiment_results as Record<string, unknown> | null) ?? {};
-      const citation = (row.citation_sources as Record<string, unknown> | null) ?? {};
+      const paperRow = firstRelatedRecord(row.paper_extraction_rows);
+      const cocktail = firstRelatedRecord(row.cocktails);
+      const experiment = firstRelatedRecord(row.experiments);
+      const assayRow = firstRelatedRecord(experiment.assays);
+      const result = firstRelatedRecord(row.cocktail_experiment_results);
+      const citation = firstRelatedRecord(row.citation_sources);
       const outcome =
         (result.outcome_metrics as Record<string, unknown> | null) ??
         (paperRow.outcome_metrics_json as Record<string, unknown> | null) ??
         {};
+      const citationText = `${String(citation.title ?? "")} ${String(citation.url ?? "")} ${String(
+        outcome.supporting_snippet ?? outcome.qualitative_summary ?? ""
+      )}`;
+      const inferredPathogen = inferPathogenFromText(citationText);
 
       return {
         publishLinkId: String(row.id),
         cocktailId: typeof row.cocktail_id === "string" ? row.cocktail_id : null,
         cocktailName: typeof cocktail.name === "string" ? cocktail.name : "Unknown cocktail",
         pathogen:
-          typeof paperRow.pathogen === "string" ? paperRow.pathogen : "unknown",
+          typeof paperRow.pathogen === "string" ? paperRow.pathogen : inferredPathogen,
         assayType:
           typeof assayRow.type === "string"
             ? assayRow.type
@@ -503,7 +521,9 @@ export async function listPublishedPaperOutcomes(filters: {
         evidenceLocation:
           typeof paperRow.evidence_location === "string"
             ? paperRow.evidence_location
-            : null,
+            : typeof outcome.supporting_snippet === "string"
+              ? outcome.supporting_snippet
+              : null,
         citation: {
           title: typeof citation.title === "string" ? citation.title : null,
           doi: typeof citation.doi === "string" ? citation.doi : null,
@@ -521,4 +541,72 @@ export async function listPublishedPaperOutcomes(filters: {
       }
       return true;
     });
+}
+
+export async function listResearchFactorMatrix(filters: {
+  pathogen?: string;
+  factorType?: string;
+  includeUnpublished?: boolean;
+}) {
+  const supabase = createSupabaseServerClient();
+  let query = supabase
+    .from("paper_extraction_factor_rows")
+    .select(
+      "id,factor_type,pathogen,host_species,host_strain_raw,phage_names_json,phage_accessions_json,assay_type,conditions_json,measurements_json,outcome_role,evidence_location,confidence,needs_review,published_at,created_at,paper_extractions(id,papers(title,doi,pmid,pmcid,url,journal,year))"
+    )
+    .order("created_at", { ascending: false })
+    .limit(1000);
+
+  if (filters.pathogen) query = query.eq("pathogen", filters.pathogen);
+  if (filters.factorType) query = query.eq("factor_type", filters.factorType);
+  if (!filters.includeUnpublished) query = query.not("published_at", "is", null);
+
+  const { data, error } = await query;
+  if (error) throw new Error(error.message);
+
+  return ((data ?? []) as Array<Record<string, unknown>>).map((row) => {
+    const extraction = firstRelatedRecord(row.paper_extractions);
+    const paper = firstRelatedRecord(extraction.papers);
+    const measurements = (row.measurements_json as Record<string, unknown> | null) ?? {};
+    const conditions = (row.conditions_json as Record<string, unknown> | null) ?? {};
+    const phageNames = Array.isArray(row.phage_names_json)
+      ? row.phage_names_json.map((item) => String(item))
+      : [];
+    const phageAccessions = Array.isArray(row.phage_accessions_json)
+      ? row.phage_accessions_json.map((item) => String(item))
+      : [];
+
+    return {
+      factorRowId: String(row.id),
+      factorType: typeof row.factor_type === "string" ? row.factor_type : "unknown",
+      pathogen: typeof row.pathogen === "string" ? row.pathogen : "unknown",
+      hostSpecies: typeof row.host_species === "string" ? row.host_species : null,
+      hostStrainRaw: typeof row.host_strain_raw === "string" ? row.host_strain_raw : null,
+      phageNames,
+      phageAccessions,
+      phageCount: phageNames.length || phageAccessions.length,
+      assayType: typeof row.assay_type === "string" ? row.assay_type : null,
+      outcomeRole: typeof row.outcome_role === "string" ? row.outcome_role : null,
+      conditions,
+      measurements,
+      numericMeasurements: Object.fromEntries(
+        Object.entries(measurements)
+          .map(([key, value]) => [key, toNumber(value)])
+          .filter((entry): entry is [string, number] => entry[1] !== null)
+      ),
+      evidenceLocation: typeof row.evidence_location === "string" ? row.evidence_location : null,
+      confidence: toNumber(row.confidence) ?? 0.5,
+      needsReview: row.needs_review !== false,
+      publishedAt: typeof row.published_at === "string" ? row.published_at : null,
+      citation: {
+        title: typeof paper.title === "string" ? paper.title : null,
+        doi: typeof paper.doi === "string" ? paper.doi : null,
+        pmid: typeof paper.pmid === "string" ? paper.pmid : null,
+        pmcid: typeof paper.pmcid === "string" ? paper.pmcid : null,
+        url: typeof paper.url === "string" ? paper.url : null,
+        journal: typeof paper.journal === "string" ? paper.journal : null,
+        year: typeof paper.year === "number" ? paper.year : null
+      }
+    };
+  });
 }

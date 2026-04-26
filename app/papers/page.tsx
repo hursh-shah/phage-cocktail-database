@@ -5,7 +5,7 @@ import { PapersConsole } from "@/app/papers/papers-console";
 export const dynamic = "force-dynamic";
 
 export default async function PapersPage() {
-  const published = await listPublishedPaperOutcomes({ pathogen: "S_aureus" });
+  const published = await listPublishedPaperOutcomes({ pathogen: "S_maltophilia" });
 
   return (
     <main className="page-shell stack">
@@ -23,7 +23,7 @@ export default async function PapersPage() {
                 Paper Ingestion Console
               </h1>
               <p className="muted" style={{ margin: 0 }}>
-                OA pipeline for S. aureus cocktail outcomes with staged curator review.
+                OA pipeline for Stenotrophomonas cocktail design factors with staged curator review.
               </p>
             </div>
             <Link href="/cocktails" className="btn-link btn-muted">
@@ -44,7 +44,7 @@ export default async function PapersPage() {
               <span>Published outcomes</span>
             </div>
             <div className="card card-body metric">
-              <strong>S. aureus</strong>
+              <strong>Steno</strong>
               <span>Default pathogen scope</span>
             </div>
           </div>

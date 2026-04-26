@@ -1,0 +1,102 @@
+{
+  "generated_at": "2026-04-26T21:43:58.633Z",
+  "host_range_model": {
+    "status": "trained_baseline_logistic_ridge",
+    "row_count": 1004,
+    "class_balance": {
+      "active": 605,
+      "inactive": 399
+    },
+    "cross_validation": {
+      "folds": [
+        {
+          "fold": 0,
+          "train_rows": 782,
+          "test_rows": 222,
+          "auroc": 0.7790969899665552,
+          "f1": 0.7279411764705882,
+          "brier": 0.19052219274508736
+        },
+        {
+          "fold": 1,
+          "train_rows": 818,
+          "test_rows": 186,
+          "auroc": 0.7597883597883598,
+          "f1": 0.7468879668049793,
+          "brier": 0.19970600957441687
+        },
+        {
+          "fold": 2,
+          "train_rows": 804,
+          "test_rows": 200,
+          "auroc": 0.7847049940675224,
+          "f1": 0.7709923664122137,
+          "brier": 0.18332184480906197
+        },
+        {
+          "fold": 3,
+          "train_rows": 805,
+          "test_rows": 199,
+          "auroc": 0.8517204301075268,
+          "f1": 0.8377358490566037,
+          "brier": 0.16567487430389718
+        },
+        {
+          "fold": 4,
+          "train_rows": 807,
+          "test_rows": 197,
+          "auroc": 0.7415427709545357,
+          "f1": 0.7392996108949416,
+          "brier": 0.19847975696839393
+        }
+      ],
+      "mean_auroc": 0.7834,
+      "mean_f1": 0.7646,
+      "mean_brier": 0.1875
+    },
+    "permutation_importance": [
+      {
+        "group": "host",
+        "auroc_drop": 0.0962
+      },
+      {
+        "group": "lps",
+        "auroc_drop": 0.0774
+      },
+      {
+        "group": "taxonomy",
+        "auroc_drop": 0.0234
+      },
+      {
+        "group": "receptor",
+        "auroc_drop": 0.0212
+      },
+      {
+        "group": "morphotype",
+        "auroc_drop": 0.0037
+      },
+      {
+        "group": "pathogen",
+        "auroc_drop": 0.0028
+      },
+      {
+        "group": "source",
+        "auroc_drop": 0.0008
+      },
+      {
+        "group": "lifestyle",
+        "auroc_drop": -0.0014
+      }
+    ],
+    "caveat": "This is a baseline linear model over heterogeneous public rows. It is useful for feature-pipeline validation, not final biological claims."
+  },
+  "readiness": {
+    "host_range_rows": 1004,
+    "host_range_acceptance_met": false,
+    "cocktail_condition_rows": 16,
+    "cocktail_condition_acceptance_met": false,
+    "cocktail_comparator_sources": 2,
+    "cocktail_comparator_sources_acceptance_met": false,
+    "sampled_source_audit_pass_rate": 1
+  }
+}

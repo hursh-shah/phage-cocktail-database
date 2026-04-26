@@ -5,7 +5,8 @@ import { searchAndQueuePapers } from "@/lib/paper-ingestion";
 const bodySchema = z.object({
   term: z.string().trim().optional(),
   maxResults: z.coerce.number().int().positive().max(100).optional(),
-  pathogenFocus: z.string().trim().optional()
+  pathogenFocus: z.string().trim().optional(),
+  profile: z.enum(["steno", "staph", "ecoli", "pseudomonas", "custom"]).optional()
 });
 
 export async function POST(request: Request) {
