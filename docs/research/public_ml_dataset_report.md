@@ -1,7 +1,5 @@
 # Public Supervised ML Dataset Report
 
-Date: 2026-04-26T21:43:59.311Z
-
 ## Dataset Built
 
 The public pipeline created a canonical supervised dataset from direct public assets, local published Steno rows, and source-checked curated comparator rows from open papers.
