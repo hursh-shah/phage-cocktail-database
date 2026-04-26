@@ -1,7 +1,5 @@
 # Phage Cocktail Dataset Findings
 
-Date: 2026-04-26
-
 This memo summarizes the current published extraction dataset and what it can realistically support for the phage-cocktail paper questions:
 
 - What should be considered when designing a cocktail: host range, kinetics, genetic relatedness, receptor/resistance, biofilm activity, antibiotic synergy, and safety?
@@ -181,7 +179,7 @@ Goal-specific weighting:
 | Antibiotic synergy | antibiotic-specific synergy metric, MIC shift, biofilm/planktonic context, safety |
 | General therapeutic suitability | safety, lytic lifestyle, absence of AMR/virulence genes, host range, manufacturability |
 
-### What We Cannot Honestly Do Yet
+### What We Cannot Do Yet
 
 We cannot train a reliable supervised model to predict arbitrary cocktail efficacy yet. The blocking issue is not total row count; it is outcome diversity.
 
