@@ -71,167 +71,158 @@ export default async function PhagesPage({ searchParams }: PageProps) {
   const nextParams = new URLSearchParams(baseParams);
   nextParams.set("page", String(pageNext));
 
-  return (
-    <main className="page-shell stack">
-      <section className="card">
-        <div className="card-body stack" style={{ gap: "0.8rem" }}>
-          <div className="split">
-            <div className="stack" style={{ gap: "0.2rem" }}>
-              <h1
-                style={{
-                  margin: 0,
-                  fontFamily: "var(--font-display), serif",
-                  fontSize: "1.8rem"
-                }}
-              >
-                Phage Collection
-              </h1>
-              <p className="muted" style={{ margin: 0 }}>
-                Search and filter curated phage records with host-range, kinetics, and evidence
-                metadata.
-              </p>
-            </div>
-            <div className="stack" style={{ gridAutoFlow: "column", gap: "0.5rem" }}>
-              <Link href="/cocktails" className="btn-link btn-muted">
-                Cocktails
-              </Link>
-              <Link href="/" className="btn-link btn-muted">
-                Overview
-              </Link>
-            </div>
-          </div>
-          <form method="get" className="grid-2">
-            <div className="field-row">
-              <label htmlFor="q">Search (name, accession, notes)</label>
-              <input id="q" name="q" defaultValue={q} placeholder="e.g. phiP68 or NC_005880.2" />
-            </div>
-            <div className="field-row">
-              <label htmlFor="host_species">Host species</label>
-              <input
-                id="host_species"
-                name="host_species"
-                defaultValue={hostSpecies}
-                placeholder="e.g. Staphylococcus aureus"
-              />
-            </div>
-            <div className="field-row">
-              <label htmlFor="stage_label">Kinetics stage</label>
-              <select id="stage_label" name="stage_label" defaultValue={stageLabel ?? ""}>
-                <option value="">Any</option>
-                <option value="early">Early</option>
-                <option value="semi_early">Semi-early</option>
-                <option value="late">Late</option>
-                <option value="unknown">Unknown</option>
-              </select>
-            </div>
-            <div className="field-row">
-              <label htmlFor="evidence_level">Evidence level</label>
-              <select id="evidence_level" name="evidence_level" defaultValue={evidenceLevel ?? ""}>
-                <option value="">Any</option>
-                <option value="peer_reviewed">Peer reviewed</option>
-                <option value="preprint">Preprint</option>
-                <option value="unpublished_comm">Unpublished communication</option>
-              </select>
-            </div>
-            <div className="field-row">
-              <label htmlFor="tags">Tags (comma separated)</label>
-              <input
-                id="tags"
-                name="tags"
-                defaultValue={tagString}
-                placeholder="staph_priority,has_genome_sequence"
-              />
-            </div>
-            <div className="field-row">
-              <label htmlFor="sort">Sort</label>
-              <select id="sort" name="sort" defaultValue={sort}>
-                <option value="name_asc">Name (A-Z)</option>
-                <option value="name_desc">Name (Z-A)</option>
-                <option value="created_desc">Recently added</option>
-              </select>
-            </div>
-            <div className="field-row">
-              <label htmlFor="has_cocktail_data">Cocktail data</label>
-              <select
-                id="has_cocktail_data"
-                name="has_cocktail_data"
-                defaultValue={hasCocktailRaw ?? ""}
-              >
-                <option value="">Any</option>
-                <option value="true">Has cocktail data</option>
-                <option value="false">No cocktail data</option>
-              </select>
-            </div>
-            <div className="field-row">
-              <label htmlFor="limit">Rows per page</label>
-              <select id="limit" name="limit" defaultValue={String(result.limit)}>
-                <option value="10">10</option>
-                <option value="20">20</option>
-                <option value="50">50</option>
-              </select>
-            </div>
-            <div className="split" style={{ alignSelf: "end" }}>
-              <button className="btn-link" type="submit">
-                Apply filters
-              </button>
-            </div>
-          </form>
-        </div>
-      </section>
+  const hasFilters = Boolean(
+    q || hostSpecies || stageLabel || evidenceLevel || tagString || hasCocktailRaw
+  );
+  const cocktailLinkedCount = result.data.filter((p) => p.hasCocktailData).length;
 
-      <section className="card">
-        <div className="card-body stack" style={{ gap: "0.8rem" }}>
-          <div className="split">
-            <span className="muted">
-              Showing {result.data.length} of {result.total} records
-            </span>
-            <span className="muted">
-              Page {result.page} / {result.totalPages}
-            </span>
-          </div>
-          <table className="data-table">
-            <thead>
+  return (
+    <main className="page-shell">
+      <header className="page-header">
+        <h1>Phages</h1>
+        <p className="page-summary">
+          {result.total.toLocaleString()} records
+          <span className="sep">·</span>
+          {cocktailLinkedCount} on this page linked to cocktail data
+          <span className="sep">·</span>
+          page {result.page} of {result.totalPages}
+        </p>
+      </header>
+
+      <form method="get" className="filter-bar">
+        <div className="field-row">
+          <label htmlFor="q">Search</label>
+          <input id="q" name="q" defaultValue={q} placeholder="name, accession, notes" />
+        </div>
+        <div className="field-row">
+          <label htmlFor="host_species">Host species</label>
+          <input
+            id="host_species"
+            name="host_species"
+            defaultValue={hostSpecies}
+            placeholder="Staphylococcus aureus"
+          />
+        </div>
+        <div className="field-row">
+          <label htmlFor="stage_label">Stage</label>
+          <select id="stage_label" name="stage_label" defaultValue={stageLabel ?? ""}>
+            <option value="">Any</option>
+            <option value="early">Early</option>
+            <option value="semi_early">Semi-early</option>
+            <option value="late">Late</option>
+            <option value="unknown">Unknown</option>
+          </select>
+        </div>
+        <div className="field-row">
+          <label htmlFor="evidence_level">Evidence</label>
+          <select id="evidence_level" name="evidence_level" defaultValue={evidenceLevel ?? ""}>
+            <option value="">Any</option>
+            <option value="peer_reviewed">Peer reviewed</option>
+            <option value="preprint">Preprint</option>
+            <option value="unpublished_comm">Unpublished</option>
+          </select>
+        </div>
+        <div className="field-row">
+          <label htmlFor="tags">Tags</label>
+          <input
+            id="tags"
+            name="tags"
+            defaultValue={tagString}
+            placeholder="staph_priority, has_genome_sequence"
+          />
+        </div>
+        <div className="field-row">
+          <label htmlFor="has_cocktail_data">Cocktail data</label>
+          <select
+            id="has_cocktail_data"
+            name="has_cocktail_data"
+            defaultValue={hasCocktailRaw ?? ""}
+          >
+            <option value="">Any</option>
+            <option value="true">Linked</option>
+            <option value="false">Not linked</option>
+          </select>
+        </div>
+        <div className="field-row">
+          <label htmlFor="sort">Sort</label>
+          <select id="sort" name="sort" defaultValue={sort}>
+            <option value="name_asc">Name A-Z</option>
+            <option value="name_desc">Name Z-A</option>
+            <option value="created_desc">Recently added</option>
+          </select>
+        </div>
+        <div className="filter-actions">
+          {hasFilters && (
+            <Link href="/phages" className="link-reset">
+              Reset
+            </Link>
+          )}
+          <button className="btn-link" type="submit">
+            Apply
+          </button>
+        </div>
+      </form>
+
+      <section className="section">
+        <table className="data-table">
+          <thead>
+            <tr>
+              <th>Phage</th>
+              <th>Accession</th>
+              <th>Host</th>
+              <th>Signals</th>
+            </tr>
+          </thead>
+          <tbody>
+            {result.data.length === 0 && (
               <tr>
-                <th>Phage</th>
-                <th>Accession</th>
-                <th>Host</th>
-                <th>Signals</th>
+                <td colSpan={4} className="muted">
+                  No phages match these filters.
+                </td>
               </tr>
-            </thead>
-            <tbody>
-              {result.data.map((phage) => (
-                <tr key={phage.id}>
-                  <td>
-                    <div className="stack" style={{ gap: "0.25rem" }}>
-                      <Link href={`/phages/${phage.id}`} style={{ color: "var(--accent)" }}>
-                        {phage.name}
-                      </Link>
-                      <span className="muted" style={{ fontSize: "0.84rem" }}>
-                        {phage.taxonomyFamily ?? "Family unknown"}
-                      </span>
-                    </div>
-                  </td>
-                  <td>{phage.genomeAccession ?? "Pending accession"}</td>
-                  <td>{phage.hostPrimaryTaxon ?? "Unspecified"}</td>
-                  <td>
-                    <div className="stack" style={{ gridAutoFlow: "column", gap: "0.35rem" }}>
-                      {phage.stageLabels.length > 0 && (
-                        <span className="pill" data-tone="accent">
-                          {phage.stageLabels.join(", ")}
-                        </span>
-                      )}
-                      {phage.hasCocktailData && (
-                        <span className="pill" data-tone="warn">
-                          Cocktail
-                        </span>
-                      )}
-                    </div>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-          <div className="split">
+            )}
+            {result.data.map((phage) => (
+              <tr key={phage.id}>
+                <td>
+                  <div className="stack" style={{ gap: "0.15rem" }}>
+                    <Link href={`/phages/${phage.id}`}>{phage.name}</Link>
+                    <span className="muted" style={{ fontSize: "0.8rem" }}>
+                      {phage.taxonomyFamily ?? "Family unknown"}
+                    </span>
+                  </div>
+                </td>
+                <td>
+                  {phage.genomeAccession ? (
+                    <span className="mono">{phage.genomeAccession}</span>
+                  ) : (
+                    <span className="muted">pending</span>
+                  )}
+                </td>
+                <td>{phage.hostPrimaryTaxon ?? "Unspecified"}</td>
+                <td>
+                  <span className="tag-list">
+                    {phage.stageLabels.length > 0 && (
+                      <span>{phage.stageLabels.join(", ")}</span>
+                    )}
+                    {phage.stageLabels.length > 0 && phage.hasCocktailData && (
+                      <span className="sep">·</span>
+                    )}
+                    {phage.hasCocktailData && <span>cocktail linked</span>}
+                    {phage.stageLabels.length === 0 && !phage.hasCocktailData && (
+                      <span className="muted">—</span>
+                    )}
+                  </span>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+
+        <div className="split">
+          <span className="muted" style={{ fontSize: "0.85rem" }}>
+            Showing {result.data.length} of {result.total.toLocaleString()}
+          </span>
+          <div className="row">
             <Link
               className={`btn-link btn-muted ${result.page <= 1 ? "disabled" : ""}`}
               aria-disabled={result.page <= 1}
@@ -240,7 +231,9 @@ export default async function PhagesPage({ searchParams }: PageProps) {
               Previous
             </Link>
             <Link
-              className={`btn-link btn-muted ${result.page >= result.totalPages ? "disabled" : ""}`}
+              className={`btn-link btn-muted ${
+                result.page >= result.totalPages ? "disabled" : ""
+              }`}
               aria-disabled={result.page >= result.totalPages}
               href={`/phages?${nextParams.toString()}`}
             >

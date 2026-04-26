@@ -24,33 +24,23 @@ export default async function NewCocktailPage() {
   }));
 
   return (
-    <main className="page-shell stack">
-      <section className="card">
-        <div className="card-body stack" style={{ gap: "0.7rem" }}>
-          <div className="split">
-            <div className="stack" style={{ gap: "0.2rem" }}>
-              <h1
-                style={{
-                  margin: 0,
-                  fontFamily: "var(--font-display), serif",
-                  fontSize: "1.8rem"
-                }}
-              >
-                New Cocktail Record
-              </h1>
-              <p className="muted" style={{ margin: 0 }}>
-                Write up a cocktail design and attach assay context plus result rows in one step.
-              </p>
-            </div>
-            <Link href="/cocktails" className="btn-link btn-muted">
-              Back to cocktails
-            </Link>
+    <main className="page-shell">
+      <header className="page-header">
+        <div className="split">
+          <div className="stack" style={{ gap: "0.4rem" }}>
+            <span className="eyebrow">Tools</span>
+            <h1>New cocktail</h1>
+            <p className="page-summary">
+              Write up a cocktail design and attach assay context plus result rows in one step.
+              <span className="sep">·</span>
+              {phages.length.toLocaleString()} phage options available.
+            </p>
           </div>
-          <span className="muted">
-            Loaded {phages.length} phage options from the current dataset.
-          </span>
+          <Link href="/cocktails" className="btn-link btn-muted">
+            Back to cocktails
+          </Link>
         </div>
-      </section>
+      </header>
 
       <NewCocktailForm phages={phages} />
     </main>

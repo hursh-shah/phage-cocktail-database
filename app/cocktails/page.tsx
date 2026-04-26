@@ -61,182 +61,178 @@ export default async function CocktailsPage({ searchParams }: PageProps) {
   const nextParams = new URLSearchParams(baseParams);
   nextParams.set("page", String(pageNext));
 
+  const hasFilters = Boolean(
+    q || intent || hostSpecies || pathogen || assay || resistanceRaw
+  );
+
   return (
-    <main className="page-shell stack">
-      <section className="card">
-        <div className="card-body stack" style={{ gap: "0.8rem" }}>
-          <div className="split">
-            <div className="stack" style={{ gap: "0.2rem" }}>
-              <h1
-                style={{
-                  margin: 0,
-                  fontFamily: "var(--font-display), serif",
-                  fontSize: "1.8rem"
-                }}
-              >
-                Cocktail Collection
-              </h1>
-              <p className="muted" style={{ margin: 0 }}>
-                Compare cocktail composition, timing strategy, and resistance outcomes.
-              </p>
-            </div>
-            <div className="stack" style={{ gridAutoFlow: "column", gap: "0.5rem" }}>
-              <Link href="/cocktails/new" className="btn-link">
-                New cocktail
-              </Link>
-              <Link href="/upload" className="btn-link btn-muted">
-                Upload metadata
-              </Link>
-            </div>
+    <main className="page-shell">
+      <header className="page-header">
+        <div className="split">
+          <div className="stack" style={{ gap: "0.4rem" }}>
+            <h1>Cocktails</h1>
+            <p className="page-summary">
+              {result.total.toLocaleString()} records
+              <span className="sep">·</span>
+              page {result.page} of {result.totalPages}
+            </p>
           </div>
-          <form method="get" className="grid-2">
-            <div className="field-row">
-              <label htmlFor="q">Search (name, rationale, phage names)</label>
-              <input id="q" name="q" defaultValue={q} placeholder="e.g. staged timing" />
-            </div>
-            <div className="field-row">
-              <label htmlFor="intent">Intent</label>
-              <input
-                id="intent"
-                name="intent"
-                defaultValue={intent}
-                placeholder="broad coverage, close genetic..."
-              />
-            </div>
-            <div className="field-row">
-              <label htmlFor="host_species">Target host species</label>
-              <input
-                id="host_species"
-                name="host_species"
-                defaultValue={hostSpecies}
-                placeholder="e.g. Staphylococcus aureus"
-              />
-            </div>
-            <div className="field-row">
-              <label htmlFor="pathogen">Pathogen key</label>
-              <input
-                id="pathogen"
-                name="pathogen"
-                defaultValue={pathogen}
-                placeholder="e.g. S_aureus"
-              />
-            </div>
-            <div className="field-row">
-              <label htmlFor="assay">Assay</label>
-              <select id="assay" name="assay" defaultValue={assay ?? ""}>
-                <option value="">Any</option>
-                <option value="kill_curve">kill_curve</option>
-                <option value="biofilm">biofilm</option>
-                <option value="EOP">EOP</option>
-                <option value="spot">spot</option>
-                <option value="plaque">plaque</option>
-                <option value="in_vivo">in_vivo</option>
-              </select>
-            </div>
-            <div className="field-row">
-              <label htmlFor="resistance_emerged">Resistance emerged</label>
-              <select
-                id="resistance_emerged"
-                name="resistance_emerged"
-                defaultValue={resistanceRaw ?? ""}
-              >
-                <option value="">Any</option>
-                <option value="true">Yes</option>
-                <option value="false">No</option>
-              </select>
-            </div>
-            <div className="field-row">
-              <label htmlFor="sort">Sort</label>
-              <select id="sort" name="sort" defaultValue={sort}>
-                <option value="created_desc">Recently updated</option>
-                <option value="name_asc">Name (A-Z)</option>
-                <option value="name_desc">Name (Z-A)</option>
-              </select>
-            </div>
-            <div className="field-row">
-              <label htmlFor="limit">Rows per page</label>
-              <select id="limit" name="limit" defaultValue={String(result.limit)}>
-                <option value="10">10</option>
-                <option value="20">20</option>
-                <option value="50">50</option>
-              </select>
-            </div>
-            <div className="split" style={{ alignSelf: "end" }}>
-              <button className="btn-link" type="submit">
-                Apply filters
-              </button>
-            </div>
-          </form>
+          <div className="row">
+            <Link href="/cocktails/new" className="btn-link">
+              New cocktail
+            </Link>
+          </div>
         </div>
-      </section>
+      </header>
 
-      <section className="card">
-        <div className="card-body stack" style={{ gap: "0.8rem" }}>
-          <div className="split">
-            <span className="muted">
-              Showing {result.data.length} of {result.total} cocktail records
-            </span>
-            <span className="muted">
-              Page {result.page} / {result.totalPages}
-            </span>
-          </div>
+      <form method="get" className="filter-bar">
+        <div className="field-row">
+          <label htmlFor="q">Search</label>
+          <input id="q" name="q" defaultValue={q} placeholder="name, rationale, phage" />
+        </div>
+        <div className="field-row">
+          <label htmlFor="intent">Intent</label>
+          <input
+            id="intent"
+            name="intent"
+            defaultValue={intent}
+            placeholder="broad coverage, close..."
+          />
+        </div>
+        <div className="field-row">
+          <label htmlFor="host_species">Host species</label>
+          <input
+            id="host_species"
+            name="host_species"
+            defaultValue={hostSpecies}
+            placeholder="Staphylococcus aureus"
+          />
+        </div>
+        <div className="field-row">
+          <label htmlFor="pathogen">Pathogen key</label>
+          <input
+            id="pathogen"
+            name="pathogen"
+            defaultValue={pathogen}
+            placeholder="S_aureus"
+          />
+        </div>
+        <div className="field-row">
+          <label htmlFor="assay">Assay</label>
+          <select id="assay" name="assay" defaultValue={assay ?? ""}>
+            <option value="">Any</option>
+            <option value="kill_curve">kill_curve</option>
+            <option value="biofilm">biofilm</option>
+            <option value="EOP">EOP</option>
+            <option value="spot">spot</option>
+            <option value="plaque">plaque</option>
+            <option value="in_vivo">in_vivo</option>
+          </select>
+        </div>
+        <div className="field-row">
+          <label htmlFor="resistance_emerged">Resistance</label>
+          <select
+            id="resistance_emerged"
+            name="resistance_emerged"
+            defaultValue={resistanceRaw ?? ""}
+          >
+            <option value="">Any</option>
+            <option value="true">Emerged</option>
+            <option value="false">Did not emerge</option>
+          </select>
+        </div>
+        <div className="field-row">
+          <label htmlFor="sort">Sort</label>
+          <select id="sort" name="sort" defaultValue={sort}>
+            <option value="created_desc">Recently updated</option>
+            <option value="name_asc">Name A-Z</option>
+            <option value="name_desc">Name Z-A</option>
+          </select>
+        </div>
+        <div className="filter-actions">
+          {hasFilters && (
+            <Link href="/cocktails" className="link-reset">
+              Reset
+            </Link>
+          )}
+          <button className="btn-link" type="submit">
+            Apply
+          </button>
+        </div>
+      </form>
 
-          <table className="data-table">
-            <thead>
+      <section className="section">
+        <table className="data-table">
+          <thead>
+            <tr>
+              <th>Cocktail</th>
+              <th>Phages</th>
+              <th>Timing</th>
+              <th>Results</th>
+            </tr>
+          </thead>
+          <tbody>
+            {result.data.length === 0 && (
               <tr>
-                <th>Cocktail</th>
-                <th>Phages</th>
-                <th>Timing profile</th>
-                <th>Results</th>
+                <td colSpan={4} className="muted">
+                  No cocktails match these filters.
+                </td>
               </tr>
-            </thead>
-            <tbody>
-              {result.data.length === 0 && (
-                <tr>
-                  <td colSpan={4} className="muted">
-                    No cocktails match these filters yet.
-                  </td>
-                </tr>
-              )}
-              {result.data.map((cocktail) => (
-                <tr key={cocktail.id}>
-                  <td>
-                    <div className="stack" style={{ gap: "0.25rem" }}>
-                      <Link href={`/cocktails/${cocktail.id}`} style={{ color: "var(--accent)" }}>
-                        {cocktail.name}
-                      </Link>
-                      <span className="muted" style={{ fontSize: "0.84rem" }}>
-                        {cocktail.intent ?? "Intent not set"}
-                      </span>
-                    </div>
-                  </td>
-                  <td>{cocktail.phageNames.slice(0, 4).join(", ") || "No components linked"}</td>
-                  <td>
-                    <div className="stack" style={{ gridAutoFlow: "column", gap: "0.35rem" }}>
-                      {cocktail.timingRoles.length === 0 && (
-                        <span className="muted">No timing labels</span>
-                      )}
-                      {cocktail.timingRoles.map((role) => (
-                        <span key={`${cocktail.id}-${role}`} className="pill" data-tone="accent">
+            )}
+            {result.data.map((cocktail) => (
+              <tr key={cocktail.id}>
+                <td>
+                  <div className="stack" style={{ gap: "0.15rem" }}>
+                    <Link href={`/cocktails/${cocktail.id}`}>{cocktail.name}</Link>
+                    <span className="muted" style={{ fontSize: "0.8rem" }}>
+                      {cocktail.intent ?? "Intent not set"}
+                    </span>
+                  </div>
+                </td>
+                <td>
+                  {cocktail.phageNames.length === 0 ? (
+                    <span className="muted">no components</span>
+                  ) : (
+                    <span className="mono">
+                      {cocktail.phageNames.slice(0, 4).join(", ")}
+                      {cocktail.phageNames.length > 4 ? "…" : ""}
+                    </span>
+                  )}
+                </td>
+                <td>
+                  {cocktail.timingRoles.length === 0 ? (
+                    <span className="muted">—</span>
+                  ) : (
+                    <span className="tag-list">
+                      {cocktail.timingRoles.map((role, idx) => (
+                        <span key={`${cocktail.id}-${role}`}>
                           {role}
+                          {idx < cocktail.timingRoles.length - 1 && (
+                            <span className="sep"> ·</span>
+                          )}
                         </span>
                       ))}
-                    </div>
-                  </td>
-                  <td>
-                    <div className="stack" style={{ gap: "0.25rem" }}>
-                      <span>{cocktail.resultCount} result rows</span>
-                      <span className="muted" style={{ fontSize: "0.84rem" }}>
-                        Resistance flags: {cocktail.resistanceEmergenceSignals}
-                      </span>
-                    </div>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+                    </span>
+                  )}
+                </td>
+                <td>
+                  <div className="stack" style={{ gap: "0.15rem" }}>
+                    <span>{cocktail.resultCount} result rows</span>
+                    <span className="muted" style={{ fontSize: "0.8rem" }}>
+                      resistance flags: {cocktail.resistanceEmergenceSignals}
+                    </span>
+                  </div>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
 
-          <div className="split">
+        <div className="split">
+          <span className="muted" style={{ fontSize: "0.85rem" }}>
+            Showing {result.data.length} of {result.total.toLocaleString()}
+          </span>
+          <div className="row">
             <Link
               className={`btn-link btn-muted ${result.page <= 1 ? "disabled" : ""}`}
               aria-disabled={result.page <= 1}
@@ -245,7 +241,9 @@ export default async function CocktailsPage({ searchParams }: PageProps) {
               Previous
             </Link>
             <Link
-              className={`btn-link btn-muted ${result.page >= result.totalPages ? "disabled" : ""}`}
+              className={`btn-link btn-muted ${
+                result.page >= result.totalPages ? "disabled" : ""
+              }`}
               aria-disabled={result.page >= result.totalPages}
               href={`/cocktails?${nextParams.toString()}`}
             >

@@ -3,9 +3,9 @@ import Link from "next/link";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Phage Cocktail Database",
+  title: "Phage Database",
   description:
-    "Research-ready phage cocktail index with host-range, kinetics, experiment context, and provenance metadata."
+    "Curated phage records with host-range, kinetics, cocktail context, and provenance metadata."
 };
 
 export default function RootLayout({
@@ -16,31 +16,49 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <header className="top-nav">
-          <div className="page-shell nav-shell">
-            <Link href="/" className="brand-link">
-              Phage Cocktail DB
+        <div className="app-shell">
+          <aside className="app-sidebar" aria-label="Primary">
+            <Link href="/phages" className="brand-link">
+              Phage Database
             </Link>
-            <nav className="nav-links" aria-label="Primary">
-              <Link href="/" className="nav-link">
-                Overview
+
+            <form action="/phages" method="get" className="sidebar-search" role="search">
+              <label htmlFor="global-search">Search</label>
+              <input
+                id="global-search"
+                type="search"
+                name="q"
+                placeholder="phage, accession, host..."
+                autoComplete="off"
+              />
+            </form>
+
+            <nav className="nav-group" aria-label="Database">
+              <span className="nav-group-label">Database</span>
+              <Link href="/phages" className="nav-link">
+                Phages
               </Link>
               <Link href="/cocktails" className="nav-link">
                 Cocktails
               </Link>
+            </nav>
+
+            <nav className="nav-group" aria-label="Tools">
+              <span className="nav-group-label">Tools</span>
               <Link href="/papers" className="nav-link">
                 Papers
-              </Link>
-              <Link href="/phages" className="nav-link">
-                Phages
               </Link>
               <Link href="/upload" className="nav-link">
                 Upload
               </Link>
+              <Link href="/cocktails/new" className="nav-link">
+                New cocktail
+              </Link>
             </nav>
-          </div>
-        </header>
-        {children}
+          </aside>
+
+          <div className="app-main">{children}</div>
+        </div>
       </body>
     </html>
   );

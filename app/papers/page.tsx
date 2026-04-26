@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { listPublishedPaperOutcomes } from "@/lib/research-service";
 import { PapersConsole } from "@/app/papers/papers-console";
 
@@ -8,48 +7,18 @@ export default async function PapersPage() {
   const published = await listPublishedPaperOutcomes({ pathogen: "S_maltophilia" });
 
   return (
-    <main className="page-shell stack">
-      <section className="card">
-        <div className="card-body stack" style={{ gap: "0.8rem" }}>
-          <div className="split">
-            <div className="stack" style={{ gap: "0.2rem" }}>
-              <h1
-                style={{
-                  margin: 0,
-                  fontFamily: "var(--font-display), serif",
-                  fontSize: "1.8rem"
-                }}
-              >
-                Paper Ingestion Console
-              </h1>
-              <p className="muted" style={{ margin: 0 }}>
-                OA pipeline for Stenotrophomonas cocktail design factors with staged curator review.
-              </p>
-            </div>
-            <Link href="/cocktails" className="btn-link btn-muted">
-              Cocktails
-            </Link>
-          </div>
-          <div className="grid-4">
-            <div className="card card-body metric">
-              <strong>token</strong>
-              <span>Queue papers</span>
-            </div>
-            <div className="card card-body metric">
-              <strong>token</strong>
-              <span>Pending review sets</span>
-            </div>
-            <div className="card card-body metric">
-              <strong>{published.length}</strong>
-              <span>Published outcomes</span>
-            </div>
-            <div className="card card-body metric">
-              <strong>Steno</strong>
-              <span>Default pathogen scope</span>
-            </div>
-          </div>
-        </div>
-      </section>
+    <main className="page-shell">
+      <header className="page-header">
+        <span className="eyebrow">Tools</span>
+        <h1>Paper ingestion</h1>
+        <p className="page-summary">
+          OA pipeline for Stenotrophomonas cocktail design factors with staged curator review.
+          <span className="sep">·</span>
+          {published.length} published outcomes
+          <span className="sep">·</span>
+          default scope: <span className="mono">S_maltophilia</span>
+        </p>
+      </header>
 
       <PapersConsole
         initialQueue={[]}
