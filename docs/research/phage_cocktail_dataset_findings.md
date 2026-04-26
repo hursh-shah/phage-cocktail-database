@@ -179,7 +179,7 @@ Goal-specific weighting:
 | Antibiotic synergy | antibiotic-specific synergy metric, MIC shift, biofilm/planktonic context, safety |
 | General therapeutic suitability | safety, lytic lifestyle, absence of AMR/virulence genes, host range, manufacturability |
 
-### What We Cannot Honestly Do Yet
+### What We Cannot Do Yet
 
 We cannot train a reliable supervised model to predict arbitrary cocktail efficacy yet. The blocking issue is not total row count; it is outcome diversity.
 
