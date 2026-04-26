@@ -1,7 +1,5 @@
 # Phage Cocktail Dataset Findings
 
-Date: 2026-04-26
-
 This memo summarizes the current published extraction dataset and what it can realistically support for the phage-cocktail paper questions:
 
 - What should be considered when designing a cocktail: host range, kinetics, genetic relatedness, receptor/resistance, biofilm activity, antibiotic synergy, and safety?
